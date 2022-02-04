@@ -5,19 +5,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>persongalleri</title>
-    <style></style>
+    <style>
+      main {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 15px;
+      }
+      article {
+        border: 4px black;
+        padding: 15px;
+        border-style: ridge;
+      }
+
+      img {
+        max-width: 90%;
+      }
+    </style>
   </head>
   <body>
-    <section></section>
+    <main></main>
     <template>
       <article>
-        <h2></h2>
+        <h2 class="navn"></h2>
         <p class="email"></p>
-        <img src="" alt="" />
+        <img src="" alt="" class="billede" />
       </article>
     </template>
     <script>
-      const container = document.querySelector("section");
+      const main = document.querySelector("main");
       const temp = document.querySelector("template");
 
       const url = "https://persongalleri-c0ec.restdb.io/rest/personliste";
@@ -27,6 +42,25 @@
           "x-apikey": "61fd31e43f215f310a37beaa",
         },
       };
+
+      async function hentData() {
+        const respons = await fetch(url, options);
+        const json = await respons.json();
+        vis(json);
+      }
+
+      function vis(json) {
+        console.log(json);
+        json.forEach((person) => {
+          const klon = temp.cloneNode(true).content;
+          klon.querySelector(".navn").textContent = person.Navn;
+          klon.querySelector(".email").textContent = person.Email;
+          klon.querySelector(".billede").src = "faces/" + person.Billede;
+          main.appendChild(klon);
+        });
+      }
+
+      hentData();
     </script>
   </body>
 </html>
